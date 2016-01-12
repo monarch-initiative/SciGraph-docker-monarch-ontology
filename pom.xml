@@ -85,11 +85,11 @@
 								</exec>
 								<exec dir="${basedir}" executable="docker" failonerror="true">
    								<redirector output="${project.build.directory}/docker-build-export-load.log" alwayslog="true"/>
-								  <arg line="save -o target/scigraph-load-monarch.tar scigraph-load-monarch:latest"/>
+								  <arg line="save -o target/scigraph-load-monarch.tar scigraph-load-monarch-ontology:latest"/>
 								</exec>
 								<exec dir="${basedir}" executable="docker" failonerror="true">
    								<redirector output="${project.build.directory}/docker-build-export-services.log" alwayslog="true"/>
-								  <arg line="save -o target/scigraph-services-monarch.tar scigraph-services-monarch:latest"/>
+								  <arg line="save -o target/scigraph-services-monarch.tar scigraph-services-monarch-ontology:latest"/>
 								</exec>
 							</target>
 						</configuration>
