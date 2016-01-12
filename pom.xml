@@ -1,0 +1,141 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.monarchinitiative</groupId>
+	<artifactId>scigraph-docker-monarch-ontology</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack-shared-curie-resources</id>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<phase>generate-test-sources</phase>
+						<configuration>
+							<outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+							<includeArtifacIds>curie-mapping</includeArtifacIds>
+							<includeGroupIds>org.monarchinitiative</includeGroupIds>
+							<excludeTransitive>true</excludeTransitive>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<!-- add indentation to the curie mapping -->
+								<replaceregexp
+									file="${project.build.directory}/generated-resources/curie_map.yaml"
+									match="^" replace="    " byline="true" />
+								<!-- add the header curie: for yaml synthax -->
+								<concat
+									destfile="${project.build.directory}/generated-resources/curie_map_formatted.yaml">
+									<header>curies:</header>
+									<filelist dir="${project.build.directory}/generated-resources/"
+										files="curie_map.yaml" />
+								</concat>
+								<!-- copy the template load file to the build directory -->
+								<copy file="${basedir}/src/main/resources/monarchLoadConfiguration.yaml.tmpl"
+									tofile="${project.build.directory}/generated-resources/monarch-load-config.yaml" />
+
+								<!-- copy the template server file to the build directory -->
+								<copy file="${basedir}/src/main/resources/monarchConfiguration.yaml.tmpl"
+									tofile="${project.build.directory}/generated-resources/monarch-server-config.yaml" />
+								<!-- load the curie file ant and injecting the curie in the right
+									placeholder -->
+								<property name="curie-filename"
+									value="${project.build.directory}/generated-resources/curie_map_formatted.yaml" />
+								<loadfile property="curie-file" srcfile="${curie-filename}" />
+								<replace
+									file="${project.build.directory}/generated-resources/monarch-server-config.yaml">
+									<replacefilter token="INJECT_CURIES" value="${curie-file}" />
+								</replace>
+
+								<exec dir="${basedir}" executable="docker" failonerror="true">
+   								<redirector output="${project.build.directory}/docker-build-load.log" alwayslog="true"/>
+								  <arg line="build -f src/main/resources/Dockerfile-load -t scigraph-load-monarch-ontology ."/>
+								</exec>
+								<exec dir="${basedir}" executable="docker" failonerror="true">
+   								<redirector output="${project.build.directory}/docker-build-services.log" alwayslog="true"/>
+								  <arg line="build -f src/main/resources/Dockerfile-services -t scigraph-services-monarch-ontology ."/>
+								</exec>
+								<exec dir="${basedir}" executable="docker" failonerror="true">
+   								<redirector output="${project.build.directory}/docker-build-export-load.log" alwayslog="true"/>
+								  <arg line="save -o target/scigraph-load-monarch.tar scigraph-load-monarch:latest"/>
+								</exec>
+								<exec dir="${basedir}" executable="docker" failonerror="true">
+   								<redirector output="${project.build.directory}/docker-build-export-services.log" alwayslog="true"/>
+								  <arg line="save -o target/scigraph-services-monarch.tar scigraph-services-monarch:latest"/>
+								</exec>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.monarchinitiative</groupId>
+			<artifactId>curie-mapping</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<classifier>resources</classifier>
+			<type>zip</type>
+			<!-- Make sure this isn't included on any classpath -->
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>Java8</id>
+			<activation>
+				<jdk>1.8</jdk>
+			</activation>
+			<properties>
+				<java.version>1.8</java.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>Java7</id>
+			<activation>
+				<jdk>1.7</jdk>
+			</activation>
+			<properties>
+				<java.version>1.7</java.version>
+			</properties>
+		</profile>
+	</profiles>
+</project>

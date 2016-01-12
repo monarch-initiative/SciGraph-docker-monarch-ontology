@@ -1,0 +1,53 @@
+server:
+  type: simple
+  applicationContextPath: /scigraph
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 9000
+
+applicationContextPath: scigraph
+
+graphConfiguration:
+  location: /scigraph/graph
+  indexedNodeProperties:
+    - label
+  exactNodeProperties:
+    - label
+  neo4jConfig:
+    dump_configuration : true
+    dbms.pagecache.memory : 6g
+
+  INJECT_CURIES
+
+cypherResources:
+    ##################
+    ### Clique merge
+    ##################
+
+    ## CliqueLeader service
+    - path: /dynamic/cliqueLeader/{id}
+      query: |
+              START start = node:node_auto_index(iri={id})
+              MATCH (start)-[:equivalentClass|:sameAs*0..1]-(leader:cliqueLeader)
+              RETURN leader
+      operations:
+        - summary: Returns the clique leader.
+          parameters:
+            - name: id
+              description: The node to start from.
+              required: false
+
+
+serviceMetadata:
+  name: 'Monarch Reconciliation Service'
+  identifierSpace: 'http://monarchinitiative.org/'
+  schemaSpace: 'http://monarchinitiative.org/'
+  view: {
+    url: 'http://monarch3-1.cslu.ohsu.edu/scigraph/refine/view/{{id}}'
+  }
+  preview: {
+    url: 'http://monarch3-1.cslu.ohsu.edu/scigraph/refine/preview/{{id}}',
+    width: 400,
+    height: 400
+  }
