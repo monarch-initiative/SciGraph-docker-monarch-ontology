@@ -81,7 +81,7 @@
 								</exec>
 								<exec dir="${basedir}" executable="docker" failonerror="true">
    								<redirector output="${project.build.directory}/docker-build-services.log" alwayslog="true"/>
-								  <arg line="build -f src/main/resources/Dockerfile-services -t scigraph-services-monarch-ontology ."/>
+								  <arg line="build --no-cache -f src/main/resources/Dockerfile-services -t scigraph-services-monarch-ontology ."/>
 								</exec>
 								<exec dir="${basedir}" executable="docker" failonerror="true">
    								<redirector output="${project.build.directory}/docker-build-export-load.log" alwayslog="true"/>
