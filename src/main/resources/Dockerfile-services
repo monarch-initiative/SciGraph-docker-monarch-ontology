@@ -41,6 +41,8 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 RUN apt-get -y update && apt-get install -y xvfb
 RUN apt-get -y update && apt-get install -y libxrender1
 RUN apt-get -y update && apt-get install -y libxi6
+RUN apt-get -y update && apt-get install -y libxtst6
+
 
 # Define default command.
 RUN git clone https://github.com/SciGraph/SciGraph.git /data/scigraph
