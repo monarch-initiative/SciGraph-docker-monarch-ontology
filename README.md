@@ -35,5 +35,5 @@ docker rmi $(docker images -q)
 add that in the /etc/rc.local
 Xvfb :1 -screen 0 800x600x16 &
 
-and that in the /etc.environment
+and that in the /etc/environment
 export DISPLAY=:1
