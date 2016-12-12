@@ -37,4 +37,4 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 # Define default command.
 RUN git clone https://github.com/SciGraph/SciGraph.git /data/scigraph
 RUN cd /data/scigraph && mvn install -DskipTests -DskipITs
-CMD cd /data/scigraph/SciGraph-core && export MAVEN_OPTS="-Xmx6g -XX:MaxPermSize=6g" && mvn exec:java -Dexec.mainClass="io.scigraph.owlapi.loader.BatchOwlLoader" -Dexec.args="-c /data/monarch-load-config.yaml"
+CMD cd /data/scigraph/SciGraph-core && export MAVEN_OPTS="-Xmx60g -XX:MaxPermSize=60g" && mvn exec:java -Dexec.mainClass="io.scigraph.owlapi.loader.BatchOwlLoader" -Dexec.args="-c /data/monarch-load-config.yaml"
