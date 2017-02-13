@@ -7,6 +7,9 @@ graphConfiguration:
     exactNodeProperties:
       - label
       - synonym
+    schemaIndexes:
+      Node :
+        - label
     neo4jConfig:
       dump_configuration : true
       dbms.pagecache.memory : 8G
@@ -97,3 +100,5 @@ cliqueConfiguration:
   batchCommitSize: 100000 
   
 addEdgeLabel: true
+
+allNodesLabel: Node
