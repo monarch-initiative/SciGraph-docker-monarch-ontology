@@ -50,7 +50,7 @@ RUN cd /data/scigraph && mvn install -DskipTests -DskipITs
 #CMD cd /data/scigraph/SciGraph-services && mvn exec:java -Dexec.mainClass="io.scigraph.services.MainApplication" -Dexec.args="server /data/monarch-server-config.yaml"
 RUN unzip /data/scigraph/SciGraph-services/target/scigraph-services-2.2-SNAPSHOT.zip -d /data
 # TODO get rid of version
-CMD java -jar /data/scigraph-services-2.1-SNAPSHOT/scigraph-services-2.2-SNAPSHOT.jar server /data/monarch-server-config.yaml
+CMD java -jar /data/scigraph-services-2.2-SNAPSHOT/scigraph-services-2.2-SNAPSHOT.jar server /data/monarch-server-config.yaml
 #CMD ls -al /data
 
 EXPOSE 9000
