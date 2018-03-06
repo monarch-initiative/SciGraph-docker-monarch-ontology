@@ -22,6 +22,32 @@ graphConfiguration:
 
 cypherResources:
     ##################
+    ### Graph Algorithms
+    ##################
+
+    ## Get the shortest path between two IDs
+    - path: /dynamic/shortest
+      query: |
+              MATCH path = shortestPath((start:Node{iri:"${start_id}")-[:${relationship}*..${max_depth}]->(end:Node{iri:"${end_id}"))
+              RETURN path
+      operations:
+        - summary: Get the shortest path between two IDs
+          parameters:
+            - name: start_id
+              description: The starting node (ex HP:0011014)
+              paramType: query
+            - name: end_id
+              description: The ending node (ex HP:0000118)
+              paramType: query
+            - name: max_depth
+              description: the maximum depth to traverse
+              paramType: query
+            - name: relationship
+              description: The property to traverse (ex subClassOf or subClassOf|partOf|isA)
+              paramType: query
+              required: false
+
+    ##################
     ### Clique merge
     ##################
 
@@ -36,9 +62,33 @@ cypherResources:
           parameters:
             - name: id
               description: The node to start from.
-              required: true
-              type: string
-              paramType: query
+              paramType: path
+
+    ## Clique service
+    - path: /dynamic/clique/{id}
+      query: |
+              START start = node:node_auto_index(iri={id})
+              MATCH path = (start)-[:equivalentClass|sameAs*]-(eq:Node)
+              RETURN path
+      operations:
+        - summary: Returns the id and all its equivalents
+          parameters:
+            - name: id
+              description: Curie formatted identifier
+              paramType: path
+
+    ## Candidate Clique Service
+    - path: /dynamic/candidateClique/{id}
+      query: |
+              START start = node:node_auto_index(iri={id})
+              MATCH path = (start)-[:equivalentClass|sameAs|OIO:hasDbXref*]-(eq:Node)
+              RETURN path
+      operations:
+        - summary: Returns ids that are equivalent and potentially equivalent (xrefs)
+          parameters:
+            - name: id
+              description: Curie formatted identifier
+              paramType: path
 
 
 serviceMetadata:
