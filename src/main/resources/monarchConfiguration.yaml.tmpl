@@ -28,7 +28,7 @@ cypherResources:
     ## Get the shortest path between two IDs
     - path: /dynamic/shortest
       query: |
-              MATCH path = shortestPath((start:Node{iri:"${start_id}")-[:${relationship}*..${max_depth}]->(end:Node{iri:"${end_id}"))
+              MATCH path = shortestPath((start:Node{iri:'${start_id}'})-[:${relationship}*..${max_depth}]->(end:Node{iri:'${end_id}'}))
               RETURN path
       operations:
         - summary: Get the shortest path between two IDs
