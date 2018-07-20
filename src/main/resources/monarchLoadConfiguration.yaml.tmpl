@@ -22,6 +22,12 @@ ontologies:
       addDirectInferredEdges: true
       addInferredEquivalences: true
       removeUnsatisfiableClasses: true
+  - url: https://raw.githubusercontent.com/monarch-initiative/GENO-ontology/develop/src/ontology/geno.owl
+    reasonerConfiguration:
+      factory: org.semanticweb.elk.owlapi.ElkReasonerFactory
+      addDirectInferredEdges: true
+      addInferredEquivalences: true
+      removeUnsatisfiableClasses: true
   - url: http://data.monarchinitiative.org/ttl/ncbigene.ttl
 
 categories:
@@ -52,6 +58,7 @@ categories:
     http://purl.obolibrary.org/obo/GO_0005575 : cellular component
     http://purl.obolibrary.org/obo/SO_0000704 : gene
     http://purl.obolibrary.org/obo/SO_0000110 : sequence feature
+    http://purl.obolibrary.org/obo/GENO_0000536 : genotype
 
 mappedProperties:
   - name: label
