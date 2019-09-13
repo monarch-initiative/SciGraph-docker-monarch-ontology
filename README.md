@@ -1,6 +1,8 @@
 # SciGraph-docker-monarch-ontology
 Build two Docker images with the monarch configs. Uses master HEAD from the SciGraph github repo.
 
+## !!Deprecated!! See https://github.com/monarch-initiative/scigraph-docker
+
 Need to have docker installed in order to run the build.
 
 **Generate the docker images locally:**
